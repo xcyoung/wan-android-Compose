@@ -10,21 +10,6 @@ import me.xcyoung.wan.android.module.OfficialAndProjectViewModel
  * @since 2022/1/20
  */
 class OfficialViewModel : OfficialAndProjectViewModel() {
-    //    private val searchId = MutableStateFlow(-1)
-//
-//    @ExperimentalCoroutinesApi
-//    val articlePagingData: Flow<PagingData<ArticleVo.ArticleItemVo>> = searchId.flatMapLatest {
-//        Pager(
-//            PagingConfig(
-//                pageSize = 20,
-//                prefetchDistance = 2,
-//                initialLoadSize = 20
-//            ),
-//            pagingSourceFactory = {
-//                OfficialArticlePagingSource(it)
-//            }
-//        ).flow
-//    }.cachedIn(viewModelScope)
     override suspend fun fetchClassificationRequest(): List<OfficialListVo> {
         return WanAndroidRepo.instance.wxarticleChapters()
     }

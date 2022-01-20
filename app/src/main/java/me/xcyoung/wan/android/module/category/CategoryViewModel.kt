@@ -7,8 +7,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
+import me.xcyoung.wan.android.ArticleVo
 import me.xcyoung.wan.android.bean.NavListVo
 import me.xcyoung.wan.android.bean.TreeListVo
 import me.xcyoung.wan.android.common.BaseViewModel
@@ -21,7 +27,10 @@ import me.xcyoung.wan.android.http.subscribeWith
  * @since 2022/1/17
  */
 class CategoryViewModel(private val scaffoldState: ScaffoldState) : BaseViewModel() {
-    val treePagingData by lazy {
+    private val searchId = MutableStateFlow(-1)
+
+    @ExperimentalCoroutinesApi
+    val treePagingData: Flow<PagingData<ArticleVo.ArticleItemVo>> = searchId.flatMapLatest {
         Pager(
             PagingConfig(
                 pageSize = 20,
@@ -29,10 +38,10 @@ class CategoryViewModel(private val scaffoldState: ScaffoldState) : BaseViewMode
                 initialLoadSize = 20
             ),
             pagingSourceFactory = {
-                TreeArticlePagingSource(treeListSelectedIdLiveData.value ?: -1)
+                TreeArticlePagingSource(it)
             }
-        ).flow.cachedIn(viewModelScope)
-    }
+        ).flow
+    }.cachedIn(viewModelScope)
 
     val treeListLiveData = MutableLiveData(emptyList<TreeListVo>())
     val treeListSelectedIdLiveData = MutableLiveData(-1)
@@ -50,6 +59,7 @@ class CategoryViewModel(private val scaffoldState: ScaffoldState) : BaseViewMode
                         -1
                     }
 
+                    searchId.value = selectedId
                     treeListSelectedIdLiveData.value = selectedId
                     treeListLiveData.value = it
                 }, onFailed = {
@@ -61,9 +71,8 @@ class CategoryViewModel(private val scaffoldState: ScaffoldState) : BaseViewMode
     }
 
     fun treeListSelected(item: TreeListVo) {
-        val value = treeListLiveData.value ?: return
+        searchId.value = item.id
         treeListSelectedIdLiveData.value = item.id
-        treeListLiveData.value = value
     }
 
     fun navList() {

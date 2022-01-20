@@ -20,13 +20,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LifecycleOwner
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import me.xcyoung.wan.android.ArticleVo
 import me.xcyoung.wan.android.module.browser.BrowserActivity
@@ -76,19 +76,13 @@ fun CategoryPage(viewModel: CategoryViewModel) {
         })
 }
 
+@ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @Composable
 private fun TreePage(viewModel: CategoryViewModel) {
     val treeList by viewModel.treeListLiveData.observeAsState()
     val treeSelectedId by viewModel.treeListSelectedIdLiveData.observeAsState()
     val treeLazyPagingItems = viewModel.treePagingData.collectAsLazyPagingItems()
-
-    val context = LocalContext.current
-    if (context is LifecycleOwner) {
-        viewModel.treeListLiveData.observe(context, {
-            treeLazyPagingItems.refresh()
-        })
-    }
 
     LaunchedEffect(key1 = Unit, block = {
         viewModel.treeList()
