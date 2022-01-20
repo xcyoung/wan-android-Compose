@@ -109,7 +109,7 @@ fun ArticlePage(viewModel: ArticleViewModel) {
 }
 
 @Composable
-private fun ArticleItem(item: ArticleVo.ArticleItemVo) {
+fun ArticleItem(item: ArticleVo.ArticleItemVo) {
     val context: Context = LocalContext.current
     Column(
         modifier = Modifier

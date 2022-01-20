@@ -6,6 +6,7 @@ import io.reactivex.schedulers.Schedulers
 import me.xcyoung.wan.android.ArticleBannerVo
 import me.xcyoung.wan.android.ArticleVo
 import me.xcyoung.wan.android.bean.NavListVo
+import me.xcyoung.wan.android.bean.OfficialListVo
 import me.xcyoung.wan.android.bean.TreeListVo
 import me.xcyoung.wan.android.common.WanAndroidException
 
@@ -69,6 +70,26 @@ class WanAndroidRepo private constructor() {
         return service.naviList()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
+    }
+
+    suspend fun wxarticleChapters(): List<OfficialListVo> {
+        val service = httpProvider.createService(WanAndroidService::class.java)
+        return intercept(service.wxarticleChapters())
+    }
+
+    suspend fun wxarticleList(pageIndex: Int, id: Int): ArticleVo {
+        val service = httpProvider.createService(WanAndroidService::class.java)
+        return intercept(service.wxarticleList(id, pageIndex))
+    }
+
+    suspend fun projectTree(): List<OfficialListVo> {
+        val service = httpProvider.createService(WanAndroidService::class.java)
+        return intercept(service.projectTree())
+    }
+
+    suspend fun projectList(pageIndex: Int, id: Int): ArticleVo {
+        val service = httpProvider.createService(WanAndroidService::class.java)
+        return intercept(service.projectList(pageIndex, id))
     }
 
     private fun <T> intercept(response: WanResponse<T>): T {

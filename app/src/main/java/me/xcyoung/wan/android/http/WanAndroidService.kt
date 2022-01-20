@@ -4,6 +4,7 @@ import io.reactivex.Observable
 import me.xcyoung.wan.android.ArticleBannerVo
 import me.xcyoung.wan.android.ArticleVo
 import me.xcyoung.wan.android.bean.NavListVo
+import me.xcyoung.wan.android.bean.OfficialListVo
 import me.xcyoung.wan.android.bean.TreeListVo
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -40,4 +41,22 @@ interface WanAndroidService {
 
     @GET("navi/json")
     fun naviList(): Observable<WanResponse<List<NavListVo>>>
+
+    @GET("wxarticle/chapters/json")
+    suspend fun wxarticleChapters(): WanResponse<List<OfficialListVo>>
+
+    @GET("wxarticle/list/{id}/{pageIndex}/json")
+    suspend fun wxarticleList(
+        @Path("id") id: Int,
+        @Path("pageIndex") pageIndex: Int
+    ): WanResponse<ArticleVo>
+
+    @GET("project/tree/json")
+    suspend fun projectTree(): WanResponse<List<OfficialListVo>>
+
+    @GET("project/list/{pageIndex}/json")
+    suspend fun projectList(
+        @Path("pageIndex") pageIndex: Int,
+        @Query("cid") id: Int
+    ): WanResponse<ArticleVo>
 }
